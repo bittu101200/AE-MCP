@@ -221,10 +221,3 @@ yarn build
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Dakkshin/after-effects-mcp&type=date&legend=top-left)](https://www.star-history.com/#Dakkshin/after-effects-mcp&type=date&legend=top-left)
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
