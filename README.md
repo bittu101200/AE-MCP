@@ -1,6 +1,6 @@
 # 🎬 After Effects MCP Server
 
-![Node.js](https://img.shields.io/badge/node-%3E=14.x-brightgreen.svg)
+![Node.js](https://img.shields.io/badge/node-%3E=18.x-brightgreen.svg)
 ![Build](https://img.shields.io/badge/build-passing-success)
 ![License](https://img.shields.io/github/license/Dakkshin/after-effects-mcp)
 ![Platform](https://img.shields.io/badge/platform-after%20effects-blue)
@@ -13,13 +13,15 @@
 
 ## Table of Contents
 - [Features](#features)
-  - [Core Composition Features](#core-composition-features)
+  - [Compositions & Project](#compositions--project)
   - [Layer Management](#layer-management)
-  - [Animation Capabilities](#animation-capabilities)
+  - [Animation & Properties](#animation--properties)
+  - [Effects & Rendering](#effects--rendering)
+  - [Productivity](#productivity)
 - [Setup Instructions](#setup-instructions)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Update MCP Config](#Update-MCP-Config)
+  - [Update MCP Config](#update-mcp-config)
   - [Running the Server](#running-the-server)
 - [Usage Guide](#usage-guide)
   - [Creating Compositions](#creating-compositions)
@@ -29,31 +31,44 @@
 - [For Developers](#for-developers)
   - [Project Structure](#project-structure)
   - [Building the Project](#building-the-project)
+  - [Tests](#tests)
+  - [Smoke Test](#smoke-test)
   - [Contributing](#contributing)
 - [License](#license)
 
 ## 📦 Features
 
-### 🎥 Core Composition Features
-- **Create compositions** with custom settings (size, frame rate, duration, background color)
-- **List all compositions** in a project
-- **Get project information** such as frame rate, dimensions, and duration
+### 🎥 Compositions & Project
+- Create and list compositions
+- Inspect composition settings (resolution, frame rate, duration, work area)
+- Open/save projects and inspect project items
 
 ### 🧱 Layer Management
-- **Create text layers** with customizable properties (font, size, color, position)
-- **Create shape layers** (rectangle, ellipse, polygon, star) with colors and strokes
-- **Create solid/adjustment layers** for backgrounds and effects
-- **Modify layer properties** like position, scale, rotation, opacity, and timing
+- Create text, shape, solid, null, and adjustment layers
+- Reorder, rename, delete, parent, and toggle visibility
+- Blending modes, track mattes, masks, and layer duplication
 
-### 🌀 Animation Capabilities
-- **Set keyframes** for layer properties (Position, Scale, Rotation, Opacity, etc.)
-- **Apply expressions** to layer properties for dynamic animations
+### 🌀 Animation & Properties
+- Set keyframes with easing
+- Add/remove expressions
+- Read/write property values via canonical property paths
+- Inspect property trees and metadata
+
+### 🎨 Effects & Rendering
+- Apply effects by display name or matchName
+- Read/modify/remove effect properties
+- Queue and render compositions, capture frames
+
+### 🧰 Productivity
+- Batch operations in a single undo step
+- Search text layers by content
+- Markers, motion blur, frame blending, time remapping
 
 ## ⚙️ Setup Instructions
 
 ### 🛠 Prerequisites
 - Adobe After Effects (2022 or later)
-- Node.js (v14 or later)
+- Node.js (18+ recommended; tests use `node --test`)
 - npm or yarn package manager
 
 ### 📥 Installation
@@ -86,16 +101,32 @@
    ```
    This will copy the necessary scripts to your After Effects installation.
 
+5. **Allow scripts to access files/network**
+   - In After Effects, enable: Preferences → Scripting & Expressions → “Allow Scripts to Write Files and Access Network”
+
 ### 🔧 Update MCP Config
 
-Go to your client (eg. Claude or Cursor ) and update your config file
+Point your MCP client to the built server entry (`build/index.js`):
 
+Mac/Linux:
 ```json
 {
   "mcpServers": {
     "AfterEffectsMCP": {
       "command": "node",
-      "args": ["C:\\Users\\Dakkshin\\after-effects-mcp\\build\\index.js"]
+      "args": ["/path/to/after-effects-mcp/build/index.js"]
+    }
+  }
+}
+```
+
+Windows:
+```json
+{
+  "mcpServers": {
+    "AfterEffectsMCP": {
+      "command": "node",
+      "args": ["C:\\\\path\\\\to\\\\after-effects-mcp\\\\build\\\\index.js"]
     }
   }
 }
@@ -116,6 +147,7 @@ Go to your client (eg. Claude or Cursor ) and update your config file
    - In After Effects, go to Window > mcp-bridge-auto.jsx
    - The panel will automatically check for commands every few seconds
    - Make sure the "Auto-run commands" checkbox is enabled
+   - The bridge reads commands/results from `~/Documents/ae-mcp-bridge`
 
 ## 🚀 Usage Guide
 
@@ -123,19 +155,12 @@ Once you have the server running and the MCP Bridge panel open in After Effects,
 
 ### 📘 Creating Compositions
 
-You can create new compositions with custom settings:
-- Name
-- Width and height (in pixels)
-- Frame rate
-- Duration
-- Background color
-
-Example MCP tool usage (for developers):
+Example MCP tool usage:
 ```javascript
-mcp_aftereffects_create_composition({
-  name: "My Composition", 
-  width: 1920, 
-  height: 1080, 
+create-composition({
+  name: "My Composition",
+  width: 1920,
+  height: 1080,
   frameRate: 30,
   duration: 10
 });
@@ -177,35 +202,51 @@ You can animate layers with:
 
 Public naming convention is **kebab-case** (recommended). Legacy camelCase names remain available for backward compatibility.
 
-| Command              | Description                            |
-|----------------------|----------------------------------------|
-| \`create-composition\` | Create a new comp                      |
-| \`run-script\`         | Run a JS script inside AE              |
-| \`get-results\`        | Get script results                     |
-| \`get-help\`           | Help for available commands            |
-| \`set-layer-keyframe\` | Add keyframe to layer property         |
-| \`set-layer-expression\` | Add/remove expressions from properties |
-| \`execute-batch\`      | Run multiple operations in one undo step |
-| \`import-from-url\`    | Download and import remote media       |
-| \`render-composition\` | Queue + render in one call             |
-| \`save-project\`       | Save current project                   |
-| \`open-project\`       | Open \`.aep\` project safely          |
+### Core
+- `create-composition`, `list-compositions` (resource)
+- `run-script`, `run-bridge-test`
+- `get-results`, `bridge-health`, `get-help`
+- `execute-batch`
 
-| `bridge-health`      | Inspect bridge runtime status          |
-| `inspect-property-tree` | Traverse nested property groups     |
-| `get-property-value` | Read direct property values            |
-| `set-property-value` | Write direct property values           |
-| `list-project-items` | Inspect project panel items            |
+### Layer Management
+- `move-layer`, `rename-layer`, `set-layer-visibility`, `delete-layer`
+- `create-null-object`, `create-adjustment-layer`, `duplicate-layer`
+- `set-blending-mode`, `set-layer-parent`, `add-mask`, `set-track-matte`
 
-Notes for first-slice development:
-- The new property-introspection/value tools use canonical property paths and normalized envelopes.
-- When the bridge script changes, reinstall/reload the `mcp-bridge-auto.jsx` panel in After Effects before expecting live behavior changes.
+### Animation & Properties
+- `set-layer-keyframe`, `get-keyframes`, `remove-keyframe`
+- `set-layer-expression`, `get-expression`
+- `getLayerInfo` (enhanced layer inspection; camelCase only)
+- `inspect-property-tree`, `get-property-metadata`, `get-property-value`, `set-property-value`
+
+### Effects
+- `apply-effect`, `apply-effect-template`, `get-effects-help`
+- `get-layer-effects`, `get-effect-properties`, `set-effect-property`, `remove-effect`
+
+### Project & Assets
+- `list-project-items`, `get-project-item-info`, `get-composition-settings`
+- `import-file`, `import-from-url`, `add-layer-from-item`, `precompose-layers`
+- `open-project`, `save-project`, `get-active-comp`
+
+### Rendering & Output
+- `add-to-render-queue`, `start-render`, `render-composition`, `capture-frame`
+
+### Text, Search, Markers, QoL
+- `set-text-properties`, `get-text-properties`, `search-text-layers`
+- `add-marker`, `get-markers`, `remove-marker`
+- `set-time-remapping`, `set-motion-blur`, `set-frame-blending`
+
+Notes:
+- Property tools use canonical property paths and normalized envelopes.
+- After updating `mcp-bridge-auto.jsx`, reinstall/reopen the panel before testing changes.
 
 ## 👨‍💻 For Developers
 
 ### 🧩 Project Structure
 
 - `src/index.ts`: MCP server implementation
+- `src/bridge/*`: Bridge payload normalization and schemas
+- `src/contracts/*`: Property path normalization and response contracts
 - `src/scripts/mcp-bridge-auto.jsx`: Main After Effects panel script
 - `install-bridge.js`: Script to install the panel in After Effects
 
@@ -216,8 +257,26 @@ npm run build
 # or
 yarn build
 ```
+### ✅ Tests
+
+```bash
+npm test
+```
+
+### 🔍 Smoke Test
+
+```bash
+node test-tools.js
+```
 
 ### 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Dakkshin/after-effects-mcp&type=date&legend=top-left)](https://www.star-history.com/#Dakkshin/after-effects-mcp&type=date&legend=top-left)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
