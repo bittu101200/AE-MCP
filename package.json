@@ -2,6 +2,12 @@
   "name": "after-effects-mcp",
   "version": "1.0.0",
   "description": "MCP server for Adobe After Effects",
+  "author": "Bhupendra Sharma",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bittu101200/AE-MCP.git"
+  },
+  "homepage": "https://github.com/bittu101200/AE-MCP",
   "main": "build/index.js",
   "type": "module",
   "scripts": {

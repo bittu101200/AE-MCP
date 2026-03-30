@@ -1,15 +1,15 @@
-# 🎬 After Effects MCP Server
+# 🎬 AE-MCP for After Effects
 
 ![Node.js](https://img.shields.io/badge/node-%3E=18.x-brightgreen.svg)
 ![Build](https://img.shields.io/badge/build-passing-success)
-![License](https://img.shields.io/github/license/Dakkshin/after-effects-mcp)
+![License](https://img.shields.io/github/license/bittu101200/AE-MCP)
 ![Platform](https://img.shields.io/badge/platform-after%20effects-blue)
 
-✨ A Model Context Protocol (MCP) server for Adobe After Effects that enables AI assistants and other applications to control After Effects through a standardized protocol.
+✨ AE-MCP is a Model Context Protocol (MCP) server for Adobe After Effects that gives AI assistants and custom tools a reliable way to automate compositions, layers, animation, effects, rendering, and project workflows.
 
-<a href="https://glama.ai/mcp/servers/@Dakkshin/after-effects-mcp">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@Dakkshin/after-effects-mcp/badge" alt="mcp-after-effects MCP server" />
-</a>
+Created, maintained, and actively expanded by Bhupendra Sharma.
+
+This repository is the primary home for the current AE-MCP implementation, including the bridge workflow, automation surface, tooling, and ongoing product improvements.
 
 ## Table of Contents
 - [Features](#features)
@@ -75,8 +75,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Dakkshin/after-effects-mcp.git
-   cd after-effects-mcp
+   git clone https://github.com/bittu101200/AE-MCP.git
+   cd AE-MCP
    ```
 
 2. **Install dependencies**
@@ -114,7 +114,7 @@ Mac/Linux:
   "mcpServers": {
     "AfterEffectsMCP": {
       "command": "node",
-      "args": ["/path/to/after-effects-mcp/build/index.js"]
+      "args": ["/path/to/AE-MCP/build/index.js"]
     }
   }
 }
@@ -126,11 +126,17 @@ Windows:
   "mcpServers": {
     "AfterEffectsMCP": {
       "command": "node",
-      "args": ["C:\\\\path\\\\to\\\\after-effects-mcp\\\\build\\\\index.js"]
+      "args": ["C:\\\\path\\\\to\\\\AE-MCP\\\\build\\\\index.js"]
+      }
     }
   }
-}
 ```
+
+## 👤 Authorship & Credits
+
+- Primary author and maintainer of AE-MCP: Bhupendra Sharma
+- This repository reflects substantial original work across the MCP server, bridge workflow, documentation, testing, and automation capabilities
+- Credit to `Dakkshin/after-effects-mcp` for the original base idea and early foundation that helped inspire this project direction
 
 ### ▶️ Running the Server
 
@@ -151,10 +157,16 @@ Windows:
 
 ## 🚀 Usage Guide
 
-Once you have the server running and the MCP Bridge panel open in After Effects, you can control After Effects through the MCP protocol. This allows AI assistants or custom applications to send commands to After Effects.
+Once the server is running and the MCP Bridge panel is open in After Effects, AI assistants and custom applications can send structured commands directly into your After Effects workflow.
 
 ### 📘 Creating Compositions
 
+You can create new compositions with custom settings such as:
+- Name
+- Width and height (in pixels)
+- Frame rate
+- Duration
+- Background color
 Example MCP tool usage:
 ```javascript
 create-composition({
@@ -168,7 +180,7 @@ create-composition({
 
 ### ✍️ Working with Layers
 
-You can create and modify different types of layers:
+You can create and modify different kinds of layers:
 
 **Text layers:**
 - Set text content, font, size, and color
@@ -186,7 +198,7 @@ You can create and modify different types of layers:
 
 ### 🕹 Animation
 
-You can animate layers with:
+You can automate animation workflows with:
 
 **Keyframes:**
 - Set property values at specific times
@@ -271,4 +283,4 @@ node test-tools.js
 
 ### 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome. If you want to improve AE-MCP, open an issue or submit a pull request with a focused change.
